@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased ${font.className}`}>
-        <Model isOpen title="Hello World" />
+        <Model isOpen title="Hello World" actionLabel="Submit" />
         <Navbar />
         {children}
       </body>

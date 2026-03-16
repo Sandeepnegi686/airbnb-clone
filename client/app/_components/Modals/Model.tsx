@@ -2,7 +2,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import Button from "../Button";
-import { CgLock } from "react-icons/cg";
 
 interface ModalProps {
   isOpen?: boolean;
@@ -12,9 +11,9 @@ interface ModalProps {
   body?: React.ReactElement;
   footer?: React.ReactElement;
   actionLabel: string;
-  disabled?: string;
+  disabled?: boolean;
   secondaryAction?: () => void;
-  secondaryLabel?: string;
+  secondaryActionLabel?: string;
 }
 
 export default function Model({
@@ -27,7 +26,7 @@ export default function Model({
   actionLabel,
   disabled,
   secondaryAction,
-  secondaryLabel,
+  secondaryActionLabel,
 }: ModalProps) {
   const [showModel, setShowModel] = useState(isOpen);
   useEffect(
@@ -77,9 +76,22 @@ export default function Model({
               </div>
               {/* BODY */}
               <div className="relative p-6 flex-auto">{body}</div>
+              {/* FOOTER */}
               <div className="flex flex-col gap-2 p-6">
                 <div className="flex items-center gap-4 w-full">
-                  <Button label="My Button" onClick={() => {}} icon={CgLock} />
+                  {secondaryAction && secondaryActionLabel && (
+                    <Button
+                      outline
+                      label={secondaryActionLabel}
+                      onClick={handleSecondaryAction}
+                      disabled={disabled}
+                    />
+                  )}
+                  <Button
+                    label={actionLabel}
+                    onClick={handleSubmit}
+                    disabled={disabled}
+                  />
                 </div>
               </div>
             </div>
