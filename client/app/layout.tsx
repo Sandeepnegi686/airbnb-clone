@@ -3,6 +3,7 @@ import { Nunito } from "next/font/google";
 import "./globals.css";
 import Navbar from "./_components/Navbar/Navbar";
 import Model from "./_components/Modals/Model";
+import RegisterModel from "./_components/Modals/RegisterModel";
 
 const font = Nunito({
   subsets: ["latin"],
@@ -21,7 +22,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased ${font.className}`}>
-        <Model isOpen title="Hello World" actionLabel="Submit" />
+        {/* <Model isOpen title="Hello World" actionLabel="Submit" /> */}
+        <RegisterModel />
         <Navbar />
         {children}
       </body>
