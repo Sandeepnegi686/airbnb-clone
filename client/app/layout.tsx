@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import "./globals.css";
 import Navbar from "./_components/Navbar/Navbar";
+import Model from "./_components/Modals/Model";
 
 const font = Nunito({
   subsets: ["latin"],
@@ -20,6 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased ${font.className}`}>
+        <Model isOpen title="Hello World" />
         <Navbar />
         {children}
       </body>
