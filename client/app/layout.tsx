@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import "./globals.css";
 import Navbar from "./_components/Navbar/Navbar";
-import Model from "./_components/Modals/Model";
 import RegisterModel from "./_components/Modals/RegisterModel";
+import ToasterProvider from "./_providers/ToasterProvider";
 
 const font = Nunito({
   subsets: ["latin"],
@@ -26,6 +26,7 @@ export default function RootLayout({
         <RegisterModel />
         <Navbar />
         {children}
+        <ToasterProvider />
       </body>
     </html>
   );
