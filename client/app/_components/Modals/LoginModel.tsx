@@ -1,5 +1,5 @@
 "use client";
-import useRegisterModel from "@/app/_hooks/useRegisterModal";
+import useLoginModel from "@/app/_hooks/useLoginModal";
 import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Model from "./Model";
@@ -8,9 +8,11 @@ import Input from "../Input";
 import toast from "react-hot-toast";
 import Button from "../Button";
 import { FcGoogle } from "react-icons/fc";
+import { useRouter } from "next/navigation";
 
-export default function RegisterModel() {
-  const { isOpen, setClose } = useRegisterModel();
+export default function LoginModel() {
+  const router = useRouter();
+  const { isOpen, setClose } = useLoginModel();
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
@@ -18,7 +20,6 @@ export default function RegisterModel() {
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
-      name: "",
       email: "",
       password: "",
     },
@@ -27,7 +28,7 @@ export default function RegisterModel() {
   const onSubmit: SubmitHandler<FieldValues> = async (detail) => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/user/signup", {
+      const res = await fetch("/api/user/login", {
         body: JSON.stringify(detail),
         method: "POST",
         credentials: "include",
@@ -36,8 +37,9 @@ export default function RegisterModel() {
       if (!data.success) {
         toast.error(data.message);
       } else {
-        toast.success("Signed In");
+        toast.success("Logged In");
         setClose();
+        router.refresh();
       }
     } catch {
       toast.error("Something went wrong!");
@@ -48,19 +50,11 @@ export default function RegisterModel() {
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
-      <Heading title="Welcome to Airbnb" subtitle="Create an account!" />
+      <Heading title="Welcome back" subtitle="Login to your account" />
       <Input
         register={register}
         id="email"
         label="Email"
-        disabled={isLoading}
-        errors={errors}
-        required
-      />
-      <Input
-        register={register}
-        id="name"
-        label="Name"
         disabled={isLoading}
         errors={errors}
         required
@@ -88,12 +82,12 @@ export default function RegisterModel() {
       />
       <div className="text-center text-neutral-500 mt-4 font-light">
         <div className="text-center flex items-center justify-center gap-2">
-          <div>Already have an accound?</div>
+          <div>Create an account?</div>
           <div
             className="text-neutral-800 cursor-pointer hover:underline"
             onClick={setClose}
           >
-            Log in
+            Sign In
           </div>
         </div>
       </div>
@@ -104,7 +98,7 @@ export default function RegisterModel() {
     <Model
       disabled={isLoading}
       isOpen={isOpen}
-      title="Register"
+      title="Login"
       actionLabel="Continue"
       body={bodyContent}
       onClose={setClose}

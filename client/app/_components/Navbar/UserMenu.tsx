@@ -6,6 +6,7 @@ import { useCallback, useState } from "react";
 
 import MenuItem from "./MenuItem";
 import useRegisterModel from "@/app/_hooks/useRegisterModal";
+import useLoginModel from "@/app/_hooks/useLoginModal";
 
 export default function UserMenu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,6 +15,7 @@ export default function UserMenu() {
   }, []);
 
   const registerModel = useRegisterModel();
+  const loginModel = useLoginModel();
 
   return (
     <div className="relative">
@@ -38,7 +40,7 @@ export default function UserMenu() {
         <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm">
           <div className="flex flex-col cursor-pointer">
             <>
-              <MenuItem label="Login" onClick={() => {}} />
+              <MenuItem label="Login" onClick={loginModel.setOpen} />
               <MenuItem label="SignUp" onClick={registerModel.setOpen} />
             </>
           </div>
