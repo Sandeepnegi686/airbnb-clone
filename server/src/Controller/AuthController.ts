@@ -2,7 +2,7 @@ import { CookieOptions, NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
 import UserModel from "../Model/UserModel";
-import { validateRegister } from "../lib/validate";
+import { loginValidation, validateRegister } from "../lib/validate";
 require("dotenv").config();
 
 const JWT_SECRET = process.env.JWT_SECRET || "";
@@ -64,51 +64,49 @@ async function signUp(
 }
 
 //Login
-// async function loginUser(
-//   req: Request<{}, {}, {email: string, password: string}>,
-//   res: Response,
-// ) {
-//   const { error } = loginValidation(req.body);
+async function login(
+  req: Request<{}, {}, { email: string; password: string }>,
+  res: Response,
+) {
+  const { error } = loginValidation(req.body);
 
-//   if (error) {
-//     const errMsg = error?.details[0]?.message;
-//     return res.status(400).json({ success: false, message: errMsg });
-//   }
-//   const { email, password } = req?.body;
-//   // console.log(email, password);
+  if (error) {
+    const errMsg = error?.details[0]?.message;
+    return res.status(400).json({ success: false, message: errMsg });
+  }
+  const { email, password } = req?.body;
+  // console.log(email, password);
 
-//   const existingUser = await UserModel.findOne({ email }).select(
-//     "+hashedPassword",
-//   );
-//   if (!existingUser) {
-//     return res.status(400).json({ success: false, message: "User not found" });
-//   }
+  const existingUser = await UserModel.findOne({ email }).select("+password");
+  if (!existingUser) {
+    return res.status(400).json({ success: false, message: "User not found" });
+  }
 
-//   const isValidPassword = await existingUser.comparePassword(password);
+  const isValidPassword = await existingUser.comparePassword(password);
 
-//   if (!isValidPassword) {
-//     return res
-//       .status(400)
-//       .json({ success: false, message: "Password incorrect" });
-//   }
-//   const userObject = existingUser.toObject();
-//   const { hashedPassword, ...user } = userObject;
+  if (!isValidPassword) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Password incorrect" });
+  }
+  const userObject = existingUser.toObject();
+  const { password: pass, ...user } = userObject;
 
-//   const data = {
-//     _id: existingUser._id,
-//     name: existingUser.name,
-//     email: existingUser.email,
-//   };
-//   const token = jwt.sign(data, JWT_SECRET, {
-//     expiresIn: 60 * 60 * 24,
-//   });
+  const data = {
+    _id: existingUser._id,
+    name: existingUser.name,
+    email: existingUser.email,
+  };
+  const token = jwt.sign(data, JWT_SECRET, {
+    expiresIn: 60 * 60 * 24,
+  });
 
-//   res.cookie("access-token", token, cookieOptions);
-//   return res.status(200).json({
-//     success: true,
-//     message: "logged in",
-//     user,
-//   });
-// }
+  res.cookie("access-token", token, cookieOptions);
+  return res.status(200).json({
+    success: true,
+    message: "Logged in",
+    user,
+  });
+}
 
-export { signUp };
+export { signUp, login };

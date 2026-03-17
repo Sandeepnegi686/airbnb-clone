@@ -1,8 +1,27 @@
-import { model, Schema, Types } from "mongoose";
+import { Model, model, Schema, Types } from "mongoose";
 import validator from "validator";
 import argon2 from "argon2";
 
-const schema = new Schema(
+interface UserType {
+  name: string;
+  email: string;
+  password?: string;
+  emailVerified?: boolean;
+  image?: string;
+  publicImageId?: string;
+  favoriteIds: Types.ObjectId[];
+  reservations: Types.ObjectId[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface IUserMethods {
+  comparePassword(userPassword: string): Promise<boolean>;
+}
+
+type UserModelType = Model<UserType, {}, IUserMethods>;
+
+const schema = new Schema<UserType, UserModelType, IUserMethods>(
   {
     name: { type: String, required: [true, "Please provide name"] },
     email: {
@@ -47,7 +66,7 @@ const schema = new Schema(
 schema.pre("save", async function () {
   try {
     if (this.isModified("password")) {
-      this.password = await argon2.hash("password");
+      this.password = await argon2.hash(this.password!);
     }
   } catch (error) {
     console.log("Something went wrong while saving the hashed password");
@@ -57,7 +76,7 @@ schema.pre("save", async function () {
 
 schema.methods.comparePassword = async function (userPassword: string) {
   try {
-    if (await argon2.verify(this.password, userPassword)) {
+    if (await argon2.verify(this.password!, userPassword)) {
       return true;
     } else {
       return false;
@@ -65,7 +84,8 @@ schema.methods.comparePassword = async function (userPassword: string) {
   } catch (err) {
     console.log(err);
     console.log("Something went wrong while comparing the password");
+    return false;
   }
 };
 
-export default model("User", schema);
+export default model<UserType, UserModelType>("User", schema);
