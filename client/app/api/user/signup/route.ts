@@ -1,0 +1,28 @@
+import BASE_API_URL from "@/app/lib/api";
+
+export async function POST(req: Request) {
+  const body = await req.json();
+  const response = await fetch(`${BASE_API_URL}/api/v1/auth/signup`, {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: { "Content-Type": "application/json" },
+    cache: "no-store",
+  });
+
+  const data = await response.json();
+  const cookie = response.headers.get("set-cookie");
+
+  if (!response.ok) {
+    return Response.json(null, {
+      status: response.status,
+    });
+  }
+
+  return Response.json(data, {
+    status: response.status,
+    headers: {
+      "Set-Cookie": cookie || "",
+      "Content-Type": "application/json",
+    },
+  });
+}

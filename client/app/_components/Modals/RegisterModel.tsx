@@ -24,18 +24,26 @@ export default function RegisterModel() {
     },
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (detail) => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/register", {
-        body: JSON.stringify(data),
+      const res = await fetch("/api/user/signup", {
+        body: JSON.stringify(detail),
         method: "POST",
         credentials: "include",
       });
-      if (!res.ok) {
-        throw new Error(`HTTP error. Status code: ${res.status}`);
+      // if (!res.ok) {
+      // toast.error("Something went wrong");
+      // throw new Error(`HTTP error. Status code: ${res.status}`);
+      // }
+      const data = await res.json();
+
+      if (!data.success) {
+        toast.error(data.message);
+      } else {
+        toast.success("Signed In");
+        setClose();
       }
-      setClose();
     } catch {
       toast.error("Something went wrong!");
     } finally {
