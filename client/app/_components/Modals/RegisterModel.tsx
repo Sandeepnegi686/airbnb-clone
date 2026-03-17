@@ -6,6 +6,8 @@ import Model from "./Model";
 import Heading from "../Heading";
 import Input from "../Input";
 import toast from "react-hot-toast";
+import Button from "../Button";
+import { FcGoogle } from "react-icons/fc";
 
 export default function RegisterModel() {
   const { isOpen, setClose } = useRegisterModel();
@@ -72,6 +74,29 @@ export default function RegisterModel() {
     </div>
   );
 
+  const footerContent = (
+    <div className="flex flex-col gap-4 mt-3">
+      <hr />
+      <Button
+        outline
+        label="Continue with Google"
+        icon={FcGoogle}
+        onClick={() => {}}
+      />
+      <div className="text-center text-neutral-500 mt-4 font-light">
+        <div className="text-center flex items-center justify-center gap-2">
+          <div>Already have an accound?</div>
+          <div
+            className="text-neutral-800 cursor-pointer hover:underline"
+            onClick={setClose}
+          >
+            Log in
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <Model
       disabled={isLoading}
@@ -81,6 +106,7 @@ export default function RegisterModel() {
       body={bodyContent}
       onClose={setClose}
       onSubmit={handleSubmit(onSubmit)}
+      footer={footerContent}
     />
   );
 }
