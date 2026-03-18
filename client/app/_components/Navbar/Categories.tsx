@@ -1,7 +1,7 @@
 "use clinet";
 
 import { TbBeach, TbMountain, TbPool } from "react-icons/tb";
-import Container from "./Container";
+import Container from "../Container";
 import {
   GiBarn,
   GiBoatFishing,
@@ -13,7 +13,7 @@ import {
   GiWindmill,
 } from "react-icons/gi";
 import { MdOutlineVilla } from "react-icons/md";
-import CategoryBox from "./CategoryBox";
+import CategoryBox from "../CategoryBox";
 import { usePathname, useSearchParams } from "next/navigation";
 import { FaSkiing } from "react-icons/fa";
 import { BsSnow } from "react-icons/bs";

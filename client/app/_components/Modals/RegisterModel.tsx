@@ -1,6 +1,7 @@
 "use client";
 import useRegisterModel from "@/app/_hooks/useRegisterModal";
-import { useState } from "react";
+import useLoginModel from "@/app/_hooks/useLoginModal";
+import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Model from "./Model";
 import Heading from "../Heading";
@@ -11,6 +12,7 @@ import { FcGoogle } from "react-icons/fc";
 
 export default function RegisterModel() {
   const { isOpen, setClose } = useRegisterModel();
+  const LoginModel = useLoginModel();
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
@@ -45,6 +47,11 @@ export default function RegisterModel() {
       setIsLoading(false);
     }
   };
+
+  const toggle = useCallback(() => {
+    setClose();
+    LoginModel.setOpen();
+  }, []);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
@@ -91,7 +98,7 @@ export default function RegisterModel() {
           <div>Already have an accound?</div>
           <div
             className="text-neutral-800 cursor-pointer hover:underline"
-            onClick={setClose}
+            onClick={toggle}
           >
             Log in
           </div>

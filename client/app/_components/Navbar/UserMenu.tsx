@@ -7,6 +7,7 @@ import { useCallback, useState } from "react";
 import MenuItem from "./MenuItem";
 import useRegisterModel from "@/app/_hooks/useRegisterModal";
 import useLoginModel from "@/app/_hooks/useLoginModal";
+import useRentModel from "@/app/_hooks/useRentModal";
 import { UserType } from "@/app/_types/UserType";
 import { useRouter } from "next/navigation";
 
@@ -23,6 +24,7 @@ export default function UserMenu({ currentUser }: UserMenuProps) {
 
   const registerModel = useRegisterModel();
   const loginModel = useLoginModel();
+  const rentModel = useRentModel();
 
   const handleLogout = useCallback(async () => {
     await fetch("/api/user/logout", {
@@ -33,12 +35,21 @@ export default function UserMenu({ currentUser }: UserMenuProps) {
     router.refresh();
   }, [router]);
 
+  const onRent = useCallback(() => {
+    if (!currentUser) {
+      loginModel.setOpen();
+      return;
+    }
+    //Open Rent Model
+    rentModel.setOpen();
+  }, [currentUser, loginModel, rentModel]);
+
   return (
     <div className="relative">
       <div className="flex items-center gap-3">
         <div
           className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer"
-          onClick={() => {}}
+          onClick={onRent}
         >
           Airbnb your home
         </div>
@@ -60,7 +71,7 @@ export default function UserMenu({ currentUser }: UserMenuProps) {
                 <MenuItem label="My trips" onClick={() => {}} />
                 <MenuItem label="My Reservations" onClick={() => {}} />
                 <MenuItem label="My Properties" onClick={() => {}} />
-                <MenuItem label="Airbnb my home" onClick={() => {}} />
+                <MenuItem label="Airbnb my home" onClick={rentModel.setOpen} />
                 <hr />
                 <MenuItem label="Logout" onClick={handleLogout} />
               </>

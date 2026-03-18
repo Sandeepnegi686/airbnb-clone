@@ -1,6 +1,6 @@
 "use client";
 import useLoginModel from "@/app/_hooks/useLoginModal";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Model from "./Model";
 import Heading from "../Heading";
@@ -10,10 +10,12 @@ import Button from "../Button";
 import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 import BASE_API_URL from "@/app/lib/api";
+import RegisterModel from "@/app/_hooks/useRegisterModal";
 
 export default function LoginModel() {
   const router = useRouter();
   const { isOpen, setClose } = useLoginModel();
+  const registerModel = RegisterModel();
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
@@ -53,6 +55,11 @@ export default function LoginModel() {
     window.location.href = `${BASE_API_URL}/api/v1/auth/google`;
   }
 
+  const toggle = useCallback(() => {
+    registerModel.setOpen();
+    setClose();
+  }, []);
+
   const bodyContent = (
     <div className="flex flex-col gap-4">
       <Heading title="Welcome back" subtitle="Login to your account" />
@@ -87,12 +94,12 @@ export default function LoginModel() {
       />
       <div className="text-center text-neutral-500 mt-4 font-light">
         <div className="text-center flex items-center justify-center gap-2">
-          <div>Create an account?</div>
+          <div>First time using Airbnb?</div>
           <div
             className="text-neutral-800 cursor-pointer hover:underline"
-            onClick={setClose}
+            onClick={toggle}
           >
-            Sign In
+            Create an account
           </div>
         </div>
       </div>
