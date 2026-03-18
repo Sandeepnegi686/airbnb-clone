@@ -22,12 +22,12 @@ export default function AuthHandler() {
 
   useEffect(() => {
     const token = params.get("access-token");
-
     if (!token) return;
-
     getCookies(token);
 
-    router.push("/");
+    setTimeout(() => {
+      window.location.replace("/");
+    }, 1000);
   }, [params, router]);
   return <div></div>;
 }
