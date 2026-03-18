@@ -5,6 +5,7 @@ import Navbar from "./_components/Navbar/Navbar";
 import RegisterModel from "./_components/Modals/RegisterModel";
 import ToasterProvider from "./_providers/ToasterProvider";
 import LoginModel from "./_components/Modals/LoginModel";
+import getCurrentUser from "./_actions/getCurrentUser";
 
 const font = Nunito({
   subsets: ["latin"],
@@ -15,18 +16,19 @@ export const metadata: Metadata = {
   description: "Airbnb clone built on NextJs NodeJs Express MongoDB",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const currentUser = await getCurrentUser();
+
   return (
     <html lang="en">
       <body className={`antialiased ${font.className}`}>
-        {/* <Model isOpen title="Hello World" actionLabel="Submit" /> */}
         <RegisterModel />
         <LoginModel />
-        <Navbar />
+        <Navbar currentUser={currentUser} />
         {children}
         <ToasterProvider />
       </body>

@@ -7,15 +7,31 @@ import { useCallback, useState } from "react";
 import MenuItem from "./MenuItem";
 import useRegisterModel from "@/app/_hooks/useRegisterModal";
 import useLoginModel from "@/app/_hooks/useLoginModal";
+import { UserType } from "@/app/_types/UserType";
+import { useRouter } from "next/navigation";
 
-export default function UserMenu() {
+interface UserMenuProps {
+  currentUser?: UserType | null;
+}
+
+export default function UserMenu({ currentUser }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
   const toggleOpen = useCallback(function () {
     setIsOpen((value) => !value);
   }, []);
 
   const registerModel = useRegisterModel();
   const loginModel = useLoginModel();
+
+  const handleLogout = useCallback(async () => {
+    await fetch("/api/user/logout", {
+      method: "DELETE",
+      credentials: "include",
+      cache: "no-store",
+    });
+    router.refresh();
+  }, [router]);
 
   return (
     <div className="relative">
@@ -32,17 +48,28 @@ export default function UserMenu() {
         >
           <AiOutlineMenu />
           <div className="hidden md:block">
-            <Avatar />
+            <Avatar src={currentUser?.image} />
           </div>
         </div>
       </div>
       {isOpen && (
         <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm">
           <div className="flex flex-col cursor-pointer">
-            <>
-              <MenuItem label="Login" onClick={loginModel.setOpen} />
-              <MenuItem label="SignUp" onClick={registerModel.setOpen} />
-            </>
+            {currentUser ? (
+              <>
+                <MenuItem label="My trips" onClick={() => {}} />
+                <MenuItem label="My Reservations" onClick={() => {}} />
+                <MenuItem label="My Properties" onClick={() => {}} />
+                <MenuItem label="Airbnb my home" onClick={() => {}} />
+                <hr />
+                <MenuItem label="Logout" onClick={handleLogout} />
+              </>
+            ) : (
+              <>
+                <MenuItem label="Login" onClick={loginModel.setOpen} />
+                <MenuItem label="SignUp" onClick={registerModel.setOpen} />
+              </>
+            )}
           </div>
         </div>
       )}
