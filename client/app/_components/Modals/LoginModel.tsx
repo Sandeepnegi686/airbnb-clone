@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import Button from "../Button";
 import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
+import BASE_API_URL from "@/app/lib/api";
 
 export default function LoginModel() {
   const router = useRouter();
@@ -48,6 +49,10 @@ export default function LoginModel() {
     }
   };
 
+  async function googleLogin() {
+    window.location.href = `${BASE_API_URL}/api/v1/auth/google`;
+  }
+
   const bodyContent = (
     <div className="flex flex-col gap-4">
       <Heading title="Welcome back" subtitle="Login to your account" />
@@ -78,7 +83,7 @@ export default function LoginModel() {
         outline
         label="Continue with Google"
         icon={FcGoogle}
-        onClick={() => {}}
+        onClick={googleLogin}
       />
       <div className="text-center text-neutral-500 mt-4 font-light">
         <div className="text-center flex items-center justify-center gap-2">
