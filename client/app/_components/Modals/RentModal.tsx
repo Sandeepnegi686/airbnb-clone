@@ -4,8 +4,15 @@ import Model from "./Model";
 import useRentModal from "@/app/_hooks/useRentModal";
 import Heading from "../Heading";
 import { categories } from "../Navbar/Categories";
-import CategoryInput from "../Navbar/CategoryInput";
+import CategoryInput from "../Inputs/CategoryInput";
 import { FieldValues, useForm } from "react-hook-form";
+import CountrySelect from "../Inputs/CountrySelect";
+
+// const Map = dynamic(() => import("../Map"), { ssr: false });
+
+import dynamic from "next/dynamic";
+import Counter from "../Inputs/Counter";
+import ImageUpload from "../Inputs/ImageUpload";
 
 enum STEPS {
   CATEGORY = 0,
@@ -40,7 +47,18 @@ export default function RentModal() {
     },
   });
   const category = watch("category");
-  const setCustomValue = (id: string, value: any) => {
+  const location = watch("location");
+  const guestCount = watch("guestCount");
+  const roomCount = watch("roomCount");
+  const bathroomCount = watch("bathroomCount");
+
+  const Map = useMemo(
+    () => dynamic(() => import("../Map"), { ssr: false }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [location],
+  );
+
+  const setCustomValue = (id: string, value: unknown) => {
     setValue(id, value, {
       shouldDirty: true,
       shouldTouch: true,
@@ -91,12 +109,78 @@ export default function RentModal() {
     </div>
   );
 
+  if (step === STEPS.LOCATION) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Where is your place located"
+          subtitle="Help guest find you!"
+        />
+        <CountrySelect
+          value={location}
+          onChange={(value) => setCustomValue("location", value)}
+        />
+        <Map center={location?.latlng} />
+      </div>
+    );
+  }
+  if (step === STEPS.INFO) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Share some basics about your place"
+          subtitle="What amenities do you have?"
+        />
+        <Counter
+          title="Guests"
+          subtitle="How many guests do you allow?"
+          value={guestCount}
+          onChange={(value) => {
+            setCustomValue("guestCount", value);
+          }}
+        />
+        <hr />
+        <Counter
+          title="Rooms"
+          subtitle="How many rooms do you have?"
+          value={roomCount}
+          onChange={(value) => {
+            setCustomValue("roomCount", value);
+          }}
+        />
+        <hr />
+        <Counter
+          title="Bathrooms"
+          subtitle="How many bathrooms do you have?"
+          value={bathroomCount}
+          onChange={(value) => {
+            setCustomValue("bathroomCount", value);
+          }}
+        />
+      </div>
+    );
+  }
+  if (step === STEPS.IMAGES) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Add a photo of your place"
+          subtitle="Show guests what your place looks like!"
+        />
+        <ImageUpload
+          value={iamgeSrc}
+          onChange={(value) => setCustomValue("imageSrc", value)}
+        />
+      </div>
+    );
+  }
+
   return (
     <div>
       <Model
         isOpen={rentModel.isOpen}
         onClose={rentModel.setClose}
-        onSubmit={rentModel.setClose}
+        onSubmit={onNext}
         actionLabel={actionLabel}
         secondaryActionLabel={secondaryActionLabel}
         secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}

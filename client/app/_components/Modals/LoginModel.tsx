@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Model from "./Model";
 import Heading from "../Heading";
-import Input from "../Input";
+import Input from "../Inputs/Input";
 import toast from "react-hot-toast";
 import Button from "../Button";
 import { FcGoogle } from "react-icons/fc";
