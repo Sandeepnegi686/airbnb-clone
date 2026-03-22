@@ -25,7 +25,23 @@ async function getAllList(req: Request, res: Response) {
   return res.status(200).json({ success: true, listings });
 }
 
-export { createListing, getAllList };
+async function getListingById(req: Request<{ listId: string }>, res: Response) {
+  const listId = req.params?.listId;
+  if (!listId || !Types.ObjectId.isValid(listId)) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid Listing Id" });
+  }
+  const listing = await ListModel.findById(listId).populate("userId");
+  if (!listing) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Listing not found" });
+  }
+  return res.status(200).json({ success: true, listing });
+}
+
+export { createListing, getAllList, getListingById };
 
 declare global {
   namespace Express {
