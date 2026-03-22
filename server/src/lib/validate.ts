@@ -21,4 +21,20 @@ function loginValidation(data: { email: string; password: string }) {
   return schema.validate(data);
 }
 
-export { validateRegister, loginValidation };
+function validateListingCreation(data: any) {
+  const schema = joi.object({
+    title: joi.string().required(),
+    description: joi.string().required(),
+    imageSrc: joi.string().required(),
+    publicImageSrcId: joi.string(),
+    category: joi.string().required(),
+    guestCount: joi.number().required(),
+    bathroomCount: joi.number().required(),
+    roomCount: joi.number().required(),
+    price: joi.number().required(),
+    location: joi.string().required(),
+  });
+  return schema.validate(data);
+}
+
+export { validateRegister, loginValidation, validateListingCreation };

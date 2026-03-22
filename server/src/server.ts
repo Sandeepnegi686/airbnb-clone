@@ -5,6 +5,8 @@ import cors from "cors";
 
 import connectDB from "./Config/connectDB";
 import authRoute from "./Routes/auth";
+import userRoute from "./Routes/user";
+import listRoute from "./Routes/listing";
 import { errorHandler } from "./middleware/errorHandler";
 require("dotenv").config();
 import passport from "./Config/passport";
@@ -28,6 +30,8 @@ app.use(function (req, res, next) {
 app.get("/", (_: Request, res: Response) => res.send("hello from Ts - node"));
 
 app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/user", userRoute);
+app.use("/api/v1/listing", listRoute);
 
 app.use(errorHandler);
 

@@ -25,7 +25,7 @@ function errorHandler(
   }
   return res
     .status(err.statusCode || 500)
-    .json({ success: false, messsage: err.message });
+    .json({ success: false, message: err.message });
 }
 
 export { APIError, errorHandler };

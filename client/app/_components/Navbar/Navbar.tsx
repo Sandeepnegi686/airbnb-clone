@@ -1,5 +1,4 @@
 "use client";
-
 import { UserType } from "@/app/_types/UserType";
 import Container from "../Container";
 import Logo from "./Logo";

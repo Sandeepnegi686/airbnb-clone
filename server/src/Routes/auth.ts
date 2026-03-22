@@ -26,7 +26,7 @@ router.get(
   }),
   (req: Request, res: Response) => {
     // Successful authentication, redirect home.
-    const user = req.user as any;
+    const user = req.user_ as any;
 
     const data = { _id: user._id, name: user.name, email: user.email };
     const token = jwt.sign(data, JWT_SECRET, {
@@ -38,12 +38,12 @@ router.get(
 );
 
 router.get("/me", authenticateUser, async (req: Request, res: Response) => {
-  if (!req.user) {
+  if (!req.user_) {
     return res
       .status(401)
       .json({ success: false, message: "User not authenticated" });
   }
-  const user = await UserModel.findById((req.user as any)._id);
+  const user = await UserModel.findById((req.user_ as any)._id);
   return res.status(200).json({ success: true, user });
 });
 

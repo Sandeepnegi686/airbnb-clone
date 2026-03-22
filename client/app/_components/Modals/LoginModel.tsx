@@ -58,7 +58,7 @@ export default function LoginModel() {
   const toggle = useCallback(() => {
     registerModel.setOpen();
     setClose();
-  }, []);
+  }, [registerModel, setClose]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">

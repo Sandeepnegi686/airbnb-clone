@@ -17,7 +17,7 @@ function authenticateUser(req: Request, res: Response, next: NextFunction) {
     }
     const token = authHeader;
     const payload = jwt.verify(token, JWT_SECRET) as AuthPayload;
-    req.user = {
+    req.user_ = {
       _id: payload._id,
       name: payload.name,
       email: payload.email,

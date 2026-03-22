@@ -25,7 +25,10 @@ const schema = new Schema(
     guestCount: {
       type: Number,
     },
-    locationValue: {
+    location: {
+      type: String,
+    },
+    price: {
       type: String,
     },
     userId: {

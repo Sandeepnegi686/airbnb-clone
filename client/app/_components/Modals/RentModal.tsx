@@ -5,7 +5,7 @@ import useRentModal from "@/app/_hooks/useRentModal";
 import Heading from "../Heading";
 import { categories } from "../Navbar/Categories";
 import CategoryInput from "../Inputs/CategoryInput";
-import { FieldValues, useForm } from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import CountrySelect from "../Inputs/CountrySelect";
 
 // const Map = dynamic(() => import("../Map"), { ssr: false });
@@ -13,6 +13,9 @@ import CountrySelect from "../Inputs/CountrySelect";
 import dynamic from "next/dynamic";
 import Counter from "../Inputs/Counter";
 import ImageUpload from "../Inputs/ImageUpload";
+import Input from "../Inputs/Input";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 enum STEPS {
   CATEGORY = 0,
@@ -24,14 +27,17 @@ enum STEPS {
 }
 
 export default function RentModal() {
+  const router = useRouter();
   const rentModel = useRentModal();
   const [step, setStep] = useState(STEPS.CATEGORY);
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
     reset,
     setValue,
     watch,
+
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: {
@@ -51,6 +57,7 @@ export default function RentModal() {
   const guestCount = watch("guestCount");
   const roomCount = watch("roomCount");
   const bathroomCount = watch("bathroomCount");
+  const imageSrc = watch("imageSrc");
 
   const Map = useMemo(
     () => dynamic(() => import("../Map"), { ssr: false }),
@@ -73,6 +80,40 @@ export default function RentModal() {
   const onNext = () => {
     setStep((value) => value + 1);
   };
+
+  const onSubmit: SubmitHandler<FieldValues> = async (details) => {
+    details.location = details?.location?.value;
+    details.price = +details?.price;
+    if (step !== STEPS.PRICE) {
+      return onNext();
+    }
+    try {
+      setIsLoading(true);
+      const res = await fetch("/api/listing", {
+        body: JSON.stringify(details),
+        credentials: "include",
+        method: "POST",
+        cache: "no-store",
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success(data.message);
+        reset();
+        setStep(STEPS.CATEGORY);
+        router.refresh();
+        rentModel.setClose();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const actionLabel = useMemo(() => {
     if (step === STEPS.PRICE) {
       return "Create";
@@ -174,13 +215,60 @@ export default function RentModal() {
       </div>
     );
   }
+  if (step === STEPS.DESCRIPTION) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="How would you describe your place?"
+          subtitle="Short and sweet works best!"
+        />
+        <Input
+          id="title"
+          label="Title"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+        <div className="w-full h-0.5 bg-gray-100"></div>
+        <Input
+          id="description"
+          label="Description"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+      </div>
+    );
+  }
+  if (step === STEPS.PRICE) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Now, set your price"
+          subtitle="How much do you charge per night?"
+        />
+        <Input
+          id="price"
+          label="Price"
+          formatPrice
+          type="number"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+      </div>
+    );
+  }
 
   return (
     <div>
       <Model
         isOpen={rentModel.isOpen}
         onClose={rentModel.setClose}
-        onSubmit={onNext}
+        onSubmit={handleSubmit(onSubmit)}
         actionLabel={actionLabel}
         secondaryActionLabel={secondaryActionLabel}
         secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
