@@ -1,6 +1,6 @@
 import getListingById from "@/app/_actions/getListingById";
 import EmptyState from "@/app/_components/EmptyState";
-import ListingClient from "./ListingClient";
+import ListingClient from "../../_components/listings/ListingClient";
 import getCurrentUser from "@/app/_actions/getCurrentUser";
 
 export default async function Page({

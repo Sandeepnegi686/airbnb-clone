@@ -6,13 +6,13 @@ export interface ListingType {
   description: string;
   imageSrc: string;
   category: string;
-  roomCount?: number;
-  bathroomCount?: number;
-  guestCount?: number;
+  roomCount: number;
+  bathroomCount: number;
+  guestCount: number;
   location: string;
-  price?: string;
+  price: string;
   userId: string | UserType;
-  reservations: string[];
-  createdAt?: Date;
-  updatedAt?: Date;
+  reservations?: string[];
+  createdAt: Date;
+  updatedAt: Date;
 }
