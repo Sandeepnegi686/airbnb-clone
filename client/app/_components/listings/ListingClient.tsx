@@ -62,16 +62,35 @@ export default function ListingClient({
     return listing.price;
   }, [dateRange, listing.price]);
 
-  const onCreateReservation = useCallback(() => {
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
+  const onCreateReservation = useCallback(async () => {
     if (!currentUser) {
       LoginModel.setOpen();
       return;
     }
     setIsLoading(true);
     // fetch()
-    toast.success("Listing reserved");
-    setDateRange(initialDateRange);
-    router.refresh();
+    const data = {
+      totalPrice,
+      startDate: dateRange.startDate?.toISOString(),
+      endDate: dateRange.endDate?.toISOString(),
+      listingId: listing._id,
+    };
+    // console.log(data);
+    const res = await fetch("/api/reservations", {
+      method: "POST",
+      credentials: "include",
+      cache: "no-store",
+      body: JSON.stringify(data),
+    });
+    const resData = await res.json();
+    if (resData.success) {
+      toast.success("Listing reserved");
+      setDateRange(initialDateRange);
+      router.refresh();
+    } else {
+      toast.error(resData.message);
+    }
     setIsLoading(false);
   }, [LoginModel, currentUser, totalPrice, dateRange, listing?._id, router]);
 

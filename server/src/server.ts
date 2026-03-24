@@ -8,6 +8,7 @@ import authRoute from "./Routes/auth";
 import userRoute from "./Routes/user";
 import listRoute from "./Routes/listing";
 import { errorHandler } from "./middleware/errorHandler";
+import reservationRoute from "./Routes/reservation";
 require("dotenv").config();
 import passport from "./Config/passport";
 
@@ -32,6 +33,7 @@ app.get("/", (_: Request, res: Response) => res.send("hello from Ts - node"));
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/listing", listRoute);
+app.use("/api/v1/reservation", reservationRoute);
 
 app.use(errorHandler);
 

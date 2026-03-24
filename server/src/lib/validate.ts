@@ -37,4 +37,19 @@ function validateListingCreation(data: any) {
   return schema.validate(data);
 }
 
-export { validateRegister, loginValidation, validateListingCreation };
+function validateReservationListing(data: any) {
+  const schema = joi.object({
+    listingId: joi.string().required(),
+    startDate: joi.date().required(),
+    endDate: joi.date().required(),
+    totalPrice: joi.number().required(),
+  });
+  return schema.validate(data);
+}
+
+export {
+  validateRegister,
+  loginValidation,
+  validateListingCreation,
+  validateReservationListing,
+};
