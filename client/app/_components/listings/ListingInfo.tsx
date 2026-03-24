@@ -33,7 +33,7 @@ export default function ListingInfo({
   bathroomCount,
   location,
 }: ListingInfoProps) {
-  const { getAll, getByValue } = useCountries();
+  const { getByValue } = useCountries();
   const coordinates = getByValue(location)?.latlng;
 
   return (
@@ -52,9 +52,7 @@ export default function ListingInfo({
       <div className="h-px w-full bg-gray-100 rounded-full"></div>
       {category && <ListingCategory category={category} />}
       <div className="h-px w-full bg-gray-100 rounded-full"></div>
-      <div className="text-lg font-light text-neutral-500">
-        {category?.description}
-      </div>
+      <div className="text-lg font-light text-neutral-500">{description}</div>
       <div className="h-px w-full bg-gray-100 rounded-full"></div>
       <Map center={coordinates} />
     </div>

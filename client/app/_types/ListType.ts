@@ -10,7 +10,7 @@ export interface ListingType {
   bathroomCount: number;
   guestCount: number;
   location: string;
-  price: string;
+  price: number;
   userId: string | UserType;
   reservations?: string[];
   createdAt: Date;
