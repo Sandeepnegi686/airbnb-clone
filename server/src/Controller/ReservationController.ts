@@ -21,10 +21,21 @@ async function createReservation(req: Request, res: Response) {
   }
 }
 
-// async function getAllList(req: Request, res: Response) {
-//   const listings = await ListModel.find().sort({ createdAt: "desc" });
-//   return res.status(200).json({ success: true, listings });
-// }
+async function getReservations(
+  req: Request<{}, {}, { listingId: string; userId: string; authorId: string }>,
+  res: Response,
+) {
+  let reservations = [];
+  const listingId = req.body?.listingId;
+  const userId = req.body?.userId;
+  const authorId = req.body?.authorId;
+  if (listingId) {
+    reservations = await ReservationModel.find({ listingId }).sort({
+      createdAt: "desc",
+    });
+  }
+  return res.status(200).json({ success: true, reservations });
+}
 
 // async function getListingById(req: Request<{ listId: string }>, res: Response) {
 //   const listId = req.params?.listId;

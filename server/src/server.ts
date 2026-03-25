@@ -52,3 +52,21 @@ async function startServer() {
 }
 
 startServer();
+
+// ==================
+
+// ✅ 2. Use SameSite Cookies (VERY important)
+
+// This is the easiest protection.
+
+// res.cookie("access-token", token, {
+//   httpOnly: true,
+//   secure: true,
+//   sameSite: "lax", // or "strict"
+// });
+// Options:
+// strict → safest (blocks all cross-site)
+// lax → allows safe navigation (recommended)
+// none → required for cross-origin (but risky)
+
+// 👉 For most apps: lax is perfect
