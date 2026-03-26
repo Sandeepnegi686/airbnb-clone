@@ -110,12 +110,13 @@ async function deleteReservation(
       .status(400)
       .json({ success: false, message: "Invalid Reservation ID" });
   }
+  const listing = reservation.listingId as any;
   if (
-    userId == reservation?.userId ||
-    userId == (reservation?.listingId?.userId as string)
+    userId?.toString() == reservation?.userId?.toString() ||
+    userId?.toString() == listing.userId?.toString()
   ) {
     await reservation.deleteOne();
-    // console.log(reservation);
+
     return res
       .status(200)
       .json({ success: true, message: "Reservation deleted" });
