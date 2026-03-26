@@ -42,8 +42,9 @@ export default function ListingClient({
         end: new Date(reservation.endDate ?? 0),
       });
       dates = [...dates, ...range];
-      return dates;
+      // console.log(dates);
     });
+    return dates;
   }, [reservations]);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -87,7 +88,7 @@ export default function ListingClient({
     if (resData.success) {
       toast.success("Listing reserved");
       setDateRange(initialDateRange);
-      router.refresh();
+      router.push("/trips");
     } else {
       toast.error(resData.message);
     }

@@ -26,8 +26,7 @@ router.get(
   }),
   (req: Request, res: Response) => {
     // Successful authentication, redirect home.
-    const user = req.user_ as any;
-
+    const user = req.user as any;
     const data = { _id: user._id, name: user.name, email: user.email };
     const token = jwt.sign(data, JWT_SECRET, {
       expiresIn: 60 * 60 * 24, // 1 day

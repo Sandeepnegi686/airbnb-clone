@@ -44,6 +44,14 @@ export default function UserMenu({ currentUser }: UserMenuProps) {
     rentModel.setOpen();
   }, [currentUser, loginModel, rentModel]);
 
+  const handleChangeRoute = useCallback(
+    (url: string) => {
+      router.push(url);
+      toggleOpen();
+    },
+    [router, toggleOpen],
+  );
+
   return (
     <div className="relative">
       <div className="flex items-center gap-3">
@@ -68,7 +76,10 @@ export default function UserMenu({ currentUser }: UserMenuProps) {
           <div className="flex flex-col cursor-pointer">
             {currentUser ? (
               <>
-                <MenuItem label="My trips" onClick={() => {}} />
+                <MenuItem
+                  label="My trips"
+                  onClick={() => handleChangeRoute("/trips")}
+                />
                 <MenuItem label="My Reservations" onClick={() => {}} />
                 <MenuItem label="My Properties" onClick={() => {}} />
                 <MenuItem label="Airbnb my home" onClick={rentModel.setOpen} />

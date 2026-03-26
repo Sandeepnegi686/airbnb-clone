@@ -3,6 +3,7 @@ import { validateReservationListing } from "../lib/validate";
 import { APIError } from "../middleware/errorHandler";
 import ReservationModel from "../Model/ReservationModel";
 import ListModel from "../Model/ListModel";
+import { Types } from "mongoose";
 
 async function createReservation(req: Request, res: Response) {
   try {
@@ -16,7 +17,7 @@ async function createReservation(req: Request, res: Response) {
     await ListModel.findByIdAndUpdate(
       req.body.listingId,
       { $push: { reservations: reservation._id } },
-      { new: true },
+      { returnDocument: "after" },
     );
     return res
       .status(201)
@@ -27,32 +28,74 @@ async function createReservation(req: Request, res: Response) {
   }
 }
 
-async function getReservations(
-  req: Request<{}, {}, { listingId: string; userId: string; authorId: string }>,
+async function getReservationsByListingID(
+  req: Request<{ listingId: string }>,
   res: Response,
 ) {
-  let reservations: any = [];
-  const listingId = req.body?.listingId;
-  const userId = req.body?.userId;
-  const authorId = req.body?.authorId;
-  if (listingId) {
-    reservations = await ReservationModel.find({ listingId }).sort({
+  // let reservations: any = [];
+  const listingId = req.params?.listingId;
+  // const userId = req.body?.userId;
+  // const authorId = req.body?.authorId;
+  // if (listingId) {
+  if (!listingId || !Types.ObjectId.isValid(listingId)) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid Listing ID" });
+  }
+  const reservations = await ReservationModel.find({ listingId }).sort({
+    createdAt: "desc",
+  });
+  if (reservations.length === 0) {
+    return res
+      .status(200)
+      .json({ success: false, message: "Cannot find reservations" });
+  }
+  return res.status(200).json({ success: true, reservations });
+  // }
+  // else if (userId) {
+  //   reservations = await ReservationModel.find({ userId }).sort({
+  //     createdAt: "desc",
+  //   });
+  // } else if (authorId) {
+  //   let listings = await ListModel.find({ userId: authorId })
+  //     .populate("reservations")
+  //     .sort({
+  //       createdAt: "desc",
+  //     });
+  //   reservations = listings.map((listing) =>
+  //     listing.reservations.map((reservation) => reservation),
+  //   );
+  // }
+}
+
+async function getReservationsByUserID(
+  req: Request<{ userId: string }>,
+  res: Response,
+) {
+  const userId = req.params?.userId;
+  if (!userId || !Types.ObjectId.isValid(userId)) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid Listing ID" });
+  }
+  const reservations = await ReservationModel.find({ userId })
+    .populate("listingId")
+    .sort({
       createdAt: "desc",
     });
-  } else if (userId) {
-    reservations = await ReservationModel.find({ userId }).sort({
-      createdAt: "desc",
-    });
-  } else if (authorId) {
-    let listings = await ListModel.find({ userId: authorId }).sort({
-      createdAt: "desc",
-    });
-    console.log(listings);
+  if (reservations.length === 0) {
+    return res
+      .status(200)
+      .json({ success: false, message: "Cannot find reservations" });
   }
   return res.status(200).json({ success: true, reservations });
 }
 
-export { createReservation, getReservations };
+export {
+  createReservation,
+  getReservationsByListingID,
+  getReservationsByUserID,
+};
 
 declare global {
   namespace Express {
