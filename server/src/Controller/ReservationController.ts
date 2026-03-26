@@ -91,10 +91,47 @@ async function getReservationsByUserID(
   return res.status(200).json({ success: true, reservations });
 }
 
+async function deleteReservation(
+  req: Request<{ reservationId: string }>,
+  res: Response,
+) {
+  const userId = req.user_?._id;
+  const reservationId = req.params?.reservationId;
+  if (!reservationId || !Types.ObjectId.isValid(reservationId)) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid Reservation ID" });
+  }
+  const reservation = await ReservationModel.findOne({
+    _id: reservationId,
+  }).populate("listingId");
+  if (!reservation) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid Reservation ID" });
+  }
+  if (
+    userId == reservation?.userId ||
+    userId == (reservation?.listingId?.userId as string)
+  ) {
+    await reservation.deleteOne();
+    // console.log(reservation);
+    return res
+      .status(200)
+      .json({ success: true, message: "Reservation deleted" });
+  } else {
+    return res.status(401).json({
+      success: false,
+      message: "You don't have permission to delete the reservation",
+    });
+  }
+}
+
 export {
   createReservation,
   getReservationsByListingID,
   getReservationsByUserID,
+  deleteReservation,
 };
 
 declare global {

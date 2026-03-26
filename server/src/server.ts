@@ -11,6 +11,7 @@ import { errorHandler } from "./middleware/errorHandler";
 import reservationRoute from "./Routes/reservation";
 require("dotenv").config();
 import passport from "./Config/passport";
+import authenticateUser from "./middleware/authMiddleware";
 
 const PORT = process.env.PORT || 80;
 const DB_URL = process.env.DB_URL || "";
@@ -33,7 +34,7 @@ app.get("/", (_: Request, res: Response) => res.send("hello from Ts - node"));
 app.use("/api/v1/auth", authRoute);
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/listing", listRoute);
-app.use("/api/v1/reservation", reservationRoute);
+app.use("/api/v1/reservation", authenticateUser, reservationRoute);
 
 app.use(errorHandler);
 
