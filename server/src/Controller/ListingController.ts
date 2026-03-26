@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { validateListingCreation } from "../lib/validate";
 import { APIError } from "../middleware/errorHandler";
 import ListModel from "../Model/ListModel";
-import { Schema, Types } from "mongoose";
+import { Types } from "mongoose";
 
 async function createListing(req: Request, res: Response) {
   try {

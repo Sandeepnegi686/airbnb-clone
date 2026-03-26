@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { validateReservationListing } from "../lib/validate";
 import { APIError } from "../middleware/errorHandler";
 import ReservationModel from "../Model/ReservationModel";
+import ListModel from "../Model/ListModel";
 
 async function createReservation(req: Request, res: Response) {
   try {
@@ -11,7 +12,12 @@ async function createReservation(req: Request, res: Response) {
       return res.status(400).json({ success: false, message: msg });
     }
     let userId = req.user_!._id;
-    await ReservationModel.create({ ...req.body, userId });
+    const reservation = await ReservationModel.create({ ...req.body, userId });
+    await ListModel.findByIdAndUpdate(
+      req.body.listingId,
+      { $push: { reservations: reservation._id } },
+      { new: true },
+    );
     return res
       .status(201)
       .json({ success: true, message: "Reservation Created" });
@@ -25,7 +31,7 @@ async function getReservations(
   req: Request<{}, {}, { listingId: string; userId: string; authorId: string }>,
   res: Response,
 ) {
-  let reservations = [];
+  let reservations: any = [];
   const listingId = req.body?.listingId;
   const userId = req.body?.userId;
   const authorId = req.body?.authorId;
@@ -33,27 +39,20 @@ async function getReservations(
     reservations = await ReservationModel.find({ listingId }).sort({
       createdAt: "desc",
     });
+  } else if (userId) {
+    reservations = await ReservationModel.find({ userId }).sort({
+      createdAt: "desc",
+    });
+  } else if (authorId) {
+    let listings = await ListModel.find({ userId: authorId }).sort({
+      createdAt: "desc",
+    });
+    console.log(listings);
   }
   return res.status(200).json({ success: true, reservations });
 }
 
-// async function getListingById(req: Request<{ listId: string }>, res: Response) {
-//   const listId = req.params?.listId;
-//   if (!listId || !Types.ObjectId.isValid(listId)) {
-//     return res
-//       .status(400)
-//       .json({ success: false, message: "Invalid Listing Id" });
-//   }
-//   const listing = await ListModel.findById(listId).populate("userId");
-//   if (!listing) {
-//     return res
-//       .status(400)
-//       .json({ success: false, message: "Listing not found" });
-//   }
-//   return res.status(200).json({ success: true, listing });
-// }
-
-export { createReservation };
+export { createReservation, getReservations };
 
 declare global {
   namespace Express {
