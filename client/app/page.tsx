@@ -4,10 +4,6 @@ import Container from "./_components/Container";
 import EmptyState from "./_components/EmptyState";
 import ListingCard from "./_components/ListingCard";
 
-// interface HomeProps {
-//   searchParams: IListingParams;
-// }
-
 const Home = async () => {
   const listings = await getListings({ userId: "" });
   const currentUser = await getCurrentUser();
