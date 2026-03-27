@@ -16,6 +16,8 @@ export default async function getReservations(
     url = `${BASE_API_URL}/api/v1/reservation/get-reservation-by-listingId/${params?.listingId}`;
   } else if (params?.userId) {
     url = `${BASE_API_URL}/api/v1/reservation/get-reservation-by-userId/${params?.userId}`;
+  } else if (params?.authorId) {
+    url = `${BASE_API_URL}/api/v1/reservation/get-reservation-by-authorId/${params?.authorId}`;
   }
   const cookieStore = cookies();
   const token = (await cookieStore).get("access-token")?.value;

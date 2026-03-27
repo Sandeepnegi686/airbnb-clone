@@ -5,18 +5,19 @@ import Heading from "../_components/Heading";
 import { ReservationType } from "../_types/ReservationType";
 import { UserType } from "../_types/UserType";
 import { useCallback, useState } from "react";
-import toast from "react-hot-toast";
 import ListingCard from "../_components/ListingCard";
 import { ListingType } from "../_types/ListType";
+import toast from "react-hot-toast";
 
-interface TripsClientProps {
+interface ReservationsClientProps {
   reservations: ReservationType[];
-  currentUser: UserType | null;
+  currentUser: UserType;
 }
-export default function TripsClinet({
+
+export default function ReservationsClient({
   reservations,
   currentUser,
-}: TripsClientProps) {
+}: ReservationsClientProps) {
   const router = useRouter();
   const [deletingId, setDeletingId] = useState("");
 
@@ -42,21 +43,18 @@ export default function TripsClinet({
 
   return (
     <Container>
-      <Heading
-        title="Trips"
-        subtitle="Where you've been and where your're goind"
-      />
-      <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
+      <Heading title="Reservations" subtitle="Booking on your properties" />
+      <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
         {reservations.map((reservation) => (
           <ListingCard
             key={reservation._id}
-            currentUser={currentUser}
             data={reservation.listingId as ListingType}
             reservation={reservation}
             actionId={reservation._id}
             onAction={onCancel}
             disabled={deletingId === reservation._id}
-            actionLabel="Cancel reservation"
+            actionLabel="Cancel guest reservation"
+            currentUser={currentUser}
           />
         ))}
       </div>

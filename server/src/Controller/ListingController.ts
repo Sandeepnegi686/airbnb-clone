@@ -3,6 +3,7 @@ import { validateListingCreation } from "../lib/validate";
 import { APIError } from "../middleware/errorHandler";
 import ListModel from "../Model/ListModel";
 import { Types } from "mongoose";
+import UserModel from "../Model/UserModel";
 
 async function createListing(req: Request, res: Response) {
   try {
@@ -41,7 +42,14 @@ async function getListingById(req: Request<{ listId: string }>, res: Response) {
   return res.status(200).json({ success: true, listing });
 }
 
-export { createListing, getAllList, getListingById };
+async function getFavoriteListings(req: Request, res: Response) {
+  const userId = req.user_?._id;
+  const user = await UserModel.findById(userId).populate("favoriteIds");
+  const listings = user?.favoriteIds;
+  return res.status(200).json({ success: true, listings });
+}
+
+export { createListing, getAllList, getListingById, getFavoriteListings };
 
 declare global {
   namespace Express {

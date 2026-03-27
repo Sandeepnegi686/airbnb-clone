@@ -91,6 +91,36 @@ async function getReservationsByUserID(
   return res.status(200).json({ success: true, reservations });
 }
 
+async function getReservationsByAuthorId(
+  req: Request<{ authorId: string }>,
+  res: Response,
+) {
+  const authorId = req.params?.authorId;
+  if (!authorId || !Types.ObjectId.isValid(authorId)) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid Author ID" });
+  }
+  let reservations = await ReservationModel.find()
+    .populate({ path: "listingId", match: { userId: authorId } })
+    .sort({
+      createdAt: "desc",
+    });
+
+  // remove reservations where listing didn't match
+  const filteredReservations = reservations.filter(
+    (res) => res.listingId !== null,
+  );
+  if (filteredReservations.length === 0) {
+    return res
+      .status(200)
+      .json({ success: false, message: "Cannot find reservations" });
+  }
+  return res
+    .status(200)
+    .json({ success: true, reservations: filteredReservations });
+}
+
 async function deleteReservation(
   req: Request<{ reservationId: string }>,
   res: Response,
@@ -133,6 +163,7 @@ export {
   getReservationsByListingID,
   getReservationsByUserID,
   deleteReservation,
+  getReservationsByAuthorId,
 };
 
 declare global {

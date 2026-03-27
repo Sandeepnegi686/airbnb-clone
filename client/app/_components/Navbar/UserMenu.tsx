@@ -80,7 +80,14 @@ export default function UserMenu({ currentUser }: UserMenuProps) {
                   label="My trips"
                   onClick={() => handleChangeRoute("/trips")}
                 />
-                <MenuItem label="My Reservations" onClick={() => {}} />
+                <MenuItem
+                  label="My Favorites"
+                  onClick={() => handleChangeRoute("/favorites")}
+                />
+                <MenuItem
+                  label="My Reservations"
+                  onClick={() => handleChangeRoute("/reservations")}
+                />
                 <MenuItem label="My Properties" onClick={() => {}} />
                 <MenuItem label="Airbnb my home" onClick={rentModel.setOpen} />
                 <hr />
