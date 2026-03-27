@@ -3,9 +3,9 @@ import { cookies } from "next/headers";
 
 export async function POST(
   req: Request,
-  { params }: { params: { listingId: string } },
+  context: { params: Promise<{ listingId: string }> },
 ) {
-  const listingId = (await params)?.listingId;
+  const listingId = (await context.params)?.listingId;
   const cookieStore = cookies();
   const token = (await cookieStore).get("access-token")?.value;
   if (!listingId || typeof listingId !== "string") {
@@ -40,9 +40,9 @@ export async function POST(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { listingId: string } },
+  context: { params: Promise<{ listingId: string }> },
 ) {
-  const listingId = (await params)?.listingId;
+  const listingId = (await context.params)?.listingId;
   const cookieStore = cookies();
   const token = (await cookieStore).get("access-token")?.value;
   if (!listingId || typeof listingId !== "string") {

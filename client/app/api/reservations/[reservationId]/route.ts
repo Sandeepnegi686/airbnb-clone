@@ -1,20 +1,16 @@
 import BASE_API_URL from "@/app/lib/api";
 import { cookies } from "next/headers";
 
-interface IParams {
-  reservationId?: string;
-}
-
 export async function DELETE(
   request: Request,
-  { params }: { params: IParams },
+  context: { params: Promise<{ reservationId: string }> },
 ) {
   const cookieStore = cookies();
   const token = (await cookieStore).get("access-token");
   if (!token) {
     return Response.json({ sucess: false }, { status: 401 });
   }
-  const reservationId = (await params)?.reservationId;
+  const { reservationId } = await context.params;
   if (!reservationId) {
     return Response.json({ sucess: false }, { status: 401 });
   }
