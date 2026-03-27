@@ -49,7 +49,49 @@ async function getFavoriteListings(req: Request, res: Response) {
   return res.status(200).json({ success: true, listings });
 }
 
-export { createListing, getAllList, getListingById, getFavoriteListings };
+async function getListingsOfuser(req: Request, res: Response) {
+  const userId = req.user_?._id;
+  const listings = await ListModel.find({ userId });
+  return res.status(200).json({ success: true, listings });
+}
+
+async function deleteListingById(
+  req: Request<{ listingId: string }>,
+  res: Response,
+) {
+  const userId = req.user_?._id;
+  const listingId = req.params?.listingId;
+  if (!listingId || !Types.ObjectId.isValid(listingId)) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid Reservation ID" });
+  }
+  const listing = await ListModel.findById(listingId);
+  if (!listing) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid Listing ID" });
+  }
+
+  if (userId?.toString() == listing?.userId?.toString()) {
+    await listing.deleteOne();
+    return res.status(200).json({ success: true, message: "Listing deleted" });
+  } else {
+    return res.status(401).json({
+      success: false,
+      message: "You don't have permission to delete the Listing",
+    });
+  }
+}
+
+export {
+  createListing,
+  getAllList,
+  getListingById,
+  getFavoriteListings,
+  getListingsOfuser,
+  deleteListingById,
+};
 
 declare global {
   namespace Express {
