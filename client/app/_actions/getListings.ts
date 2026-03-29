@@ -1,29 +1,36 @@
-import { cookies } from "next/headers";
 import { ListingType } from "../_types/ListType";
 import BASE_API_URL from "../lib/api";
 
-export interface getListingProps {
-  userId?: string;
+interface QueryParams {
+  guestCount?: number;
+  roomCount?: number;
+  bathroomCount?: number;
+  startDate?: Date;
+  endDate?: Date;
+  locationValue?: string;
+  category?: string;
 }
 
-async function getListings({
-  userId = "",
-}: getListingProps): Promise<ListingType[]> {
-  const cookieStore = cookies();
-  const token = (await cookieStore).get("access-token")?.value;
-  const url = userId
-    ? `${BASE_API_URL}/api/v1/listing/getAllListingOfUser`
-    : `${BASE_API_URL}/api/v1/listing/getAllListing`;
+async function getListings(searchParams: QueryParams): Promise<ListingType[]> {
+  if (searchParams.startDate) {
+    searchParams.startDate = new Date(searchParams.startDate);
+  }
+  if (searchParams.endDate) {
+    searchParams.endDate = new Date(searchParams.endDate);
+  }
+
+  let urlString = "";
+  for (const key in searchParams) {
+    urlString += `&${key}=${searchParams[key as keyof QueryParams]}`;
+  }
+  const url = `${BASE_API_URL}/api/v1/listing/getAllListing?${urlString}`;
   const res = await fetch(url, {
     method: "GET",
-    headers: {
-      Cookie: `access-token=${token}`,
-    },
     cache: "no-store",
   });
-  if (!res.ok) {
-    return [];
-  }
+
+  if (!res.ok) return [];
+
   const data = await res.json();
   return data.listings;
 }

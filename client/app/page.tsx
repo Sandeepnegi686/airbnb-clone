@@ -4,8 +4,10 @@ import Container from "./_components/Container";
 import EmptyState from "./_components/EmptyState";
 import ListingCard from "./_components/ListingCard";
 
-const Home = async () => {
-  const listings = await getListings({ userId: "" });
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const Home = async ({ searchParams }: any) => {
+  const sp = await searchParams;
+  const listings = await getListings(sp);
   const currentUser = await getCurrentUser();
 
   if (listings?.length === 0) {

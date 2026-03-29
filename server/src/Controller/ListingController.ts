@@ -4,6 +4,7 @@ import { APIError } from "../middleware/errorHandler";
 import ListModel from "../Model/ListModel";
 import { Types } from "mongoose";
 import UserModel from "../Model/UserModel";
+import ReservationModel from "../Model/ReservationModel";
 
 async function createListing(req: Request, res: Response) {
   try {
@@ -21,8 +22,67 @@ async function createListing(req: Request, res: Response) {
   }
 }
 
-async function getAllList(req: Request, res: Response) {
-  const listings = await ListModel.find().sort({ createdAt: "desc" });
+interface QueryParams {
+  guestCount?: number;
+  roomCount?: number;
+  bathroomCount?: number;
+  startDate?: string;
+  endDate?: string;
+  location?: string;
+  category?: string;
+}
+
+async function getAllList(
+  req: Request<{}, {}, {}, QueryParams>,
+  res: Response,
+) {
+  const {
+    guestCount,
+    roomCount,
+    bathroomCount,
+    startDate,
+    endDate,
+    location,
+    category,
+  } = req.query;
+  const query: any = {};
+
+  if (guestCount) {
+    query.guestCount = {
+      $gte: Number(guestCount),
+    };
+  }
+  if (roomCount) {
+    query.roomCount = {
+      $gte: Number(roomCount),
+    };
+  }
+  if (bathroomCount) {
+    query.bathroomCount = {
+      $gte: Number(bathroomCount),
+    };
+  }
+  if (startDate && endDate) {
+    const conflictingReservations = await ReservationModel.find({
+      startDate: { $lte: new Date(endDate) },
+      endDate: { $gte: new Date(startDate) },
+    });
+
+    const excludedListingIds = conflictingReservations.map(
+      (res) => res.listingId,
+    );
+
+    query._id = {
+      $nin: excludedListingIds,
+    };
+  }
+  if (location) {
+    query.location = location;
+  }
+  if (category) {
+    query.category = category;
+  }
+  const listings = await ListModel.find(query).sort({ createdAt: -1 });
   return res.status(200).json({ success: true, listings });
 }
 

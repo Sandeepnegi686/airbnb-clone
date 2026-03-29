@@ -1,5 +1,6 @@
 import getCurrentUser from "../_actions/getCurrentUser";
-import getListings from "../_actions/getListings";
+
+import getListingsByUserId from "../_actions/getListingsByUserId";
 import EmptyState from "../_components/EmptyState";
 import PropertyClient from "./PropertyClient";
 
@@ -10,7 +11,7 @@ const TripsPage = async () => {
       <EmptyState title="Unauthorized" subtitle="Please login"></EmptyState>
     );
   }
-  const listings = await getListings({ userId: currentUser?._id });
+  const listings = await getListingsByUserId();
   if (!listings || listings.length === 0) {
     return (
       <EmptyState

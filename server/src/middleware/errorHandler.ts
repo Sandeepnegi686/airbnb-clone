@@ -15,6 +15,7 @@ function errorHandler(
   res: Response,
   next: NextFunction,
 ) {
+  console.log(err);
   if (err instanceof mongoose.Error.ValidationError) {
     const errors = Object.values(err.errors).map((el: any) => el.message);
 
