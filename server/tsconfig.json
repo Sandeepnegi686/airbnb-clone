@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "rootDir": "./src",
-    "outDir": "./dist",
+    "outDir": "dist",
     "module": "commonjs",
     "target": "es2020",
     "strict": true,
