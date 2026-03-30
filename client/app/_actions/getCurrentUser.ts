@@ -14,11 +14,12 @@ async function getCurrentUser(): Promise<UserType | null> {
       },
       cache: "no-store",
     });
-
-    if (res.ok) {
-      const data = await res.json();
-      currentUser = data.user;
+    if (!res.ok) {
+      return null;
     }
+
+    const data = await res.json();
+    currentUser = data.user;
   }
   return currentUser;
 }
