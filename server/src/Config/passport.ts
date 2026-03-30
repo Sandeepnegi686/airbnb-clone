@@ -2,6 +2,8 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import UserModel from "../Model/UserModel";
 import passport from "passport";
 
+const serverUrl = process.env.SERVER_URL || "";
+
 passport.use(
   new GoogleStrategy(
     {
@@ -9,7 +11,7 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       callbackURL:
         process.env.NODE_ENV === "production"
-          ? "https://netflix-clone-server-six.vercel.app/api/v1/auth/google/callback"
+          ? `${serverUrl}/api/v1/auth/google/callback`
           : "http://localhost:5500/api/v1/auth/google/callback",
     },
     async (_, __, profile, cb) => {
