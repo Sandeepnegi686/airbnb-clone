@@ -9,6 +9,7 @@ import Input from "../Inputs/Input";
 import toast from "react-hot-toast";
 import Button from "../Button";
 import { FcGoogle } from "react-icons/fc";
+import BASE_API_URL from "@/app/lib/api";
 
 export default function RegisterModel() {
   const { isOpen, setClose } = useRegisterModel();
@@ -51,7 +52,7 @@ export default function RegisterModel() {
   const toggle = useCallback(() => {
     setClose();
     LoginModel.setOpen();
-  }, []);
+  }, [LoginModel, setClose]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
@@ -84,6 +85,10 @@ export default function RegisterModel() {
     </div>
   );
 
+  async function googleLogin() {
+    window.location.href = `${BASE_API_URL}/api/v1/auth/google`;
+  }
+
   const footerContent = (
     <div className="flex flex-col gap-4 mt-3">
       <hr />
@@ -91,7 +96,7 @@ export default function RegisterModel() {
         outline
         label="Continue with Google"
         icon={FcGoogle}
-        onClick={() => {}}
+        onClick={googleLogin}
       />
       <div className="text-center text-neutral-500 mt-4 font-light">
         <div className="text-center flex items-center justify-center gap-2">
