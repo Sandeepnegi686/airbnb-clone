@@ -86,7 +86,7 @@ export default function RegisterModel() {
   );
 
   async function googleLogin() {
-    window.location.href = `${BASE_API_URL}/api/v1/auth/google`;
+    window.location.href = `${process.env.NEXT_PUBLIC_BASE_API_URL}/api/v1/auth/google`;
   }
 
   const footerContent = (
